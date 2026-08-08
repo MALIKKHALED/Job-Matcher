@@ -13,7 +13,7 @@ build/
 dist/
 .eggs/
 
-# Testing / linting / type-checking
+# Testing / linting / type-checking / Outputs
 .pytest_cache/
 .mypy_cache/
 .ruff_cache/
@@ -21,6 +21,8 @@ dist/
 htmlcov/
 .tox/
 .nox/
+tests/
+ai_agent_output/
 
 # Virtual environments
 .venv/
