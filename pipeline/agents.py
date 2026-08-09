@@ -86,3 +86,45 @@ def resume_enhancer_agent() -> Agent:
         allow_delegation=False,
         memory=False,
     )
+
+def match_evaluator_agent() -> Agent:
+    return Agent(
+        role="Job Match Evaluator",
+        goal=(
+            "Compare the optimized resume against the job posting and produce an "
+            "objective, job-specific match report: which required skills the resume "
+            "covers, which are missing, an overall match percentage, and a clear "
+            "recommendation. Do not inflate the score; base it only on evidence in "
+            "the resume."
+        ),
+        backstory=(
+            "You are a rigorous hiring screener who evaluates how well a candidate's "
+            "resume matches a specific job posting. You compare skills, requirements, "
+            "and qualifications precisely, and you never guess or exaggerate what the "
+            "candidate brings."
+        ),
+        llm=build_llm(),
+        verbose=True,
+        allow_delegation=False,
+        memory=False,
+    )
+
+def cover_letter_writer_agent() -> Agent:
+    return Agent(
+        role="Cover Letter Writer",
+        goal=(
+            "Write a concise, personalized cover letter that grounds every claim in "
+            "the candidate's optimized resume and addresses the specific job posting. "
+            "Reference only evidence-backed achievements; never invent skills, "
+            "metrics, or experiences."
+        ),
+        backstory=(
+            "You are a professional cover letter writer. You connect the candidate's "
+            "real, verifiable achievements to the employer's needs, keep the tone "
+            "confident and specific, and never fabricate details."
+        ),
+        llm=build_llm(),
+        verbose=True,
+        allow_delegation=False,
+        memory=False,
+    )

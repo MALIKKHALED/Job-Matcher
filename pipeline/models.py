@@ -83,3 +83,20 @@ class OptimizedResume(BaseModel):
     markdown: str = Field(title="Full optimized resume in Markdown, built only from existing ResumeProfile facts")
     changes: list[str] = Field(default_factory=list, title="Safe restatements / alignments applied, for transparency")
     missing_info_report: list[str] = Field(default_factory=list, title="Actionable checklist of what the user must add") 
+
+class MatchReport(BaseModel):
+    """Job-specific match evaluation between the optimized resume and the job posting."""
+
+    match_percentage: int = Field(title="Overall match percentage (0-100)")
+    matched_skills: list[str] = Field(default_factory=list, title="Job skills demonstrably covered by the resume")
+    missing_skills: list[str] = Field(default_factory=list, title="Job skills genuinely absent from the resume")
+    strengths: list[str] = Field(default_factory=list, title="Strong alignment points")
+    gaps: list[str] = Field(default_factory=list, title="Concrete weaknesses vs the posting")
+    recommendation: str = Field(default="N/A", title="Apply now / Improve then apply / Do not apply") 
+
+class CoverLetter(BaseModel):
+    """Personalized cover letter grounded in the resume and job posting."""
+
+    subject: str = Field(default="N/A", title="Email subject line")
+    body: str = Field(default="N/A", title="Cover letter body in Markdown")
+    notes: list[str] = Field(default_factory=list, title="Caveats for the user (e.g. verify facts before sending)")  

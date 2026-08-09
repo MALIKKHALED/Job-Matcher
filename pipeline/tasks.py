@@ -3,8 +3,22 @@
 from crewai import Task
 import os
 
-from pipeline.agents import scraper_agent, resume_extractor_agent, ats_scorer_agent, resume_enhancer_agent
-from pipeline.models import JobDetails, ResumeProfile, ATSReport, OptimizedResume
+from pipeline.agents import ( 
+    scraper_agent,
+    resume_extractor_agent,
+    ats_scorer_agent, 
+    resume_enhancer_agent,
+    match_evaluator_agent,
+    cover_letter_writer_agent
+)
+from pipeline.models import(
+    JobDetails,
+    ResumeProfile,
+    ATSReport,
+    OptimizedResume,
+    MatchReport,
+    CoverLetter
+)
 
 MAX_ATS_SCORE = 100
 
@@ -109,5 +123,67 @@ def enhance_resume_task(context: list | None = None) -> Task:
         output_pydantic=OptimizedResume,
         output_file=os.path.join("ai_agent_output", "step_4_optimized_resume.json"),
         agent=resume_enhancer_agent(),
+        context=context,
+    )
+
+def match_eval_task(context: list | None = None) -> Task:
+    return Task(
+        description=(
+            "You are the Job Match Evaluator. In context you receive the scraped "
+            "JobDetails and the OptimizedResume from the enhancer.\n\n"
+            "Evaluate how well the optimized resume matches this specific job posting:\n"
+            "- matched_skills: each required skill/qualification from the posting's "
+            "required_skills and job_requirements that the resume demonstrably covers.\n"
+            "- missing_skills: required skills genuinely absent from the resume. If the "
+            "resume covers a requirement in different wording, count it as matched, not "
+            "missing.\n"
+            "- match_percentage: 0-100 overall fit, primarily skill coverage plus "
+            "experience relevance. Be honest and conservative; do not inflate.\n"
+            "- strengths: where the candidate clearly aligns (core language, domain "
+            "experience, soft skills).\n"
+            "- gaps: concrete weaknesses vs the posting (e.g. no SQL, no AI/ML, no "
+            "certifications, no Agentic AI background).\n"
+            "- recommendation: one of 'Apply now', 'Improve then apply', or 'Do not "
+            "apply', based on match_percentage and gaps.\n\n"
+            "Only use evidence from the resume. Never claim a skill is covered unless "
+            "the resume demonstrates it."
+        ),
+        expected_output=(
+            "A JSON object matching the MatchReport schema: match_percentage, "
+            "matched_skills, missing_skills, strengths, gaps, and a recommendation."
+        ),
+        output_pydantic=MatchReport,
+        output_file=os.path.join("ai_agent_output", "step_5_match_report.json"),
+        agent=match_evaluator_agent(),
+        context=context,
+    )
+
+def cover_letter_task(context: list | None = None) -> Task:
+    return Task(
+        description=(
+            "You are the Cover Letter Writer. In context you receive the scraped "
+            "JobDetails, the OptimizedResume, and the MatchReport.\n\n"
+            "Write a personalized cover letter (250-350 words) for the candidate "
+            "applying to this specific job.\n\n"
+            "RULES:\n"
+            "- Every claim must be traceable to the OptimizedResume. Never invent "
+            "skills, metrics, employers, projects, or dates.\n"
+            "- Address the job title and company from the JobDetails provided in "
+            "context. Use 'Dear Hiring Manager,' and sign with the candidate's name.\n"
+            "- Highlight 2-3 of the strongest evidence-backed match points from the "
+            "MatchReport (e.g. Python proficiency, automated reporting pipelines).\n"
+            "- Do not fabricate contact details, referrals, or why-you-left-previous-"
+            "job reasons.\n"
+            "- Provide a subject line for an email application.\n"
+            "- In 'notes', flag anything the candidate should verify or customize "
+            "before sending (e.g. correct company name, add date)."
+        ),
+        expected_output=(
+            "A JSON object matching the CoverLetter schema: subject, body (Markdown), "
+            "and notes."
+        ),
+        output_pydantic=CoverLetter,
+        output_file=os.path.join("ai_agent_output", "step_6_cover_letter.json"),
+        agent=cover_letter_writer_agent(),
         context=context,
     )
