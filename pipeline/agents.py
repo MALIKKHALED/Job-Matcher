@@ -25,3 +25,43 @@ def scraper_agent() -> Agent:
         allow_delegation=False,
         memory=False,
     )
+
+def resume_extractor_agent() -> Agent:
+    return Agent(
+        role="Extract the Resume into Structured Data",
+        goal=(
+            "Extract every fact from the candidate's resume into a structured "
+            "ResumeProfile: contact info, summary, skills, experience (with "
+            "achievement bullets), education, certifications, and languages. "
+            "Never invent, infer, or fill missing values."
+        ),
+        backstory=(
+            "You are a meticulous resume parser. You convert a raw resume document "
+            "into clean structured data. If a value is absent from the document you "
+            "leave it empty and record the section name in missing_sections instead "
+            "of guessing."
+        ),
+        llm=build_llm(),
+        verbose=True,
+        allow_delegation=False,
+        memory=False,
+    )
+
+def ats_scorer_agent() -> Agent:
+    return Agent(
+        role="ATS Compliance Judge",
+        goal=(
+            "Score the candidate's structured resume against the fixed ATS rubric, "
+            "applying each criterion and weight exactly as given. Be strict and "
+            "objective: award points only for what is verifiably present."
+        ),
+        backstory=(
+            "You are an impartial ATS scoring system used by recruiters to filter "
+            "resumes. You apply a fixed rubric and never show favoritism. If a resume "
+            "lacks something, you deduct the full points for that criterion."
+        ),
+        llm=build_llm(),
+        verbose=True,
+        allow_delegation=False,
+        memory=False,
+    )

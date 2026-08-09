@@ -20,3 +20,59 @@ class JobDetails(BaseModel):
     required_skills: list[str] = Field(default_factory=list, title="Required technical and soft skills")
 
     additional_notes: str = Field(default="N/A", title="Any Additional Note or important information")
+
+class ExperienceItem(BaseModel):
+    """A single work experience entry."""
+
+    company: str = Field(default="", title="Company name")
+    title: str = Field(default="", title="Job title / role")
+    start_date: str = Field(default="", title="Start date")
+    end_date: str = Field(default="", title="End date")
+    bullets: list[str] = Field(default_factory=list, title="Achievement bullets as written")
+
+
+class EducationItem(BaseModel):
+    """A single education entry."""
+
+    institution: str = Field(default="", title="Institution name")
+    degree: str = Field(default="", title="Degree obtained")
+    field: str = Field(default="", title="Field of study")
+    start_date: str = Field(default="", title="Start date")
+    end_date: str = Field(default="", title="End date")
+
+
+class ResumeProfile(BaseModel):
+    """Structured resume profile extracted by the resume extractor agent."""
+
+    name: str = Field(default="", title="Full name")
+    email: str = Field(default="", title="Email address")
+    phone: str = Field(default="", title="Phone number")
+    location: str = Field(default="", title="City, country or region")
+    linkedin: str = Field(default="", title="LinkedIn or portfolio URL")
+    summary: str = Field(default="", title="Professional summary")
+    skills: list[str] = Field(default_factory=list, title="Skills listed on the resume")
+    experience: list[ExperienceItem] = Field(default_factory=list, title="Work experience")
+    education: list[EducationItem] = Field(default_factory=list, title="Education")
+    certifications: list[str] = Field(default_factory=list, title="Certifications and licenses")
+    missing_sections: list[str] = Field(default_factory=list, title="Sections absent from the resume")
+
+
+class CriterionResult(BaseModel):
+    """Score for a single rubric criterion."""
+
+    criterion_id: str = Field(title="Rubric criterion id")
+    category: str = Field(title="Criterion name")
+    points_earned: int = Field(title="Points awarded")
+    points_max: int = Field(title="Maximum points for this criterion")
+    reason: str = Field(title="One-line justification")
+
+
+class ATSReport(BaseModel):
+    """ATS compliance report produced by the ATS scoring agent."""
+
+    total_score: int = Field(title="Total ATS score out of max_score")
+    max_score: int = Field(default=100, title="Maximum possible score")
+    criteria: list[CriterionResult] = Field(default_factory=list, title="Per-criterion results")
+    strengths: list[str] = Field(default_factory=list, title="What the resume does well")
+    deductions: list[str] = Field(default_factory=list, title="What lost points and why")
+    critical_missing: list[str] = Field(default_factory=list, title="Must-add checklist for the enhancer")
