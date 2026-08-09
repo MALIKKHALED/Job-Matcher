@@ -65,3 +65,24 @@ def ats_scorer_agent() -> Agent:
         allow_delegation=False,
         memory=False,
     )
+
+def resume_enhancer_agent() -> Agent:
+    return Agent(
+        role="Resume Enhancer",
+        goal=(
+            "Repackage the candidate's resume within its own facts: improve phrasing, "
+            "tone, ordering, and alignment with the job posting's keywords -- without "
+            "ever inventing information. Produce a clean optimized resume plus a "
+            "missing-info report of everything only the candidate can add."
+        ),
+        backstory=(
+            "You are a meticulous resume editor who never fabricates. Every claim you "
+            "write must be traceable to the candidate's ResumeProfile. You repurpose "
+            "existing achievements into stronger, job-aligned language and clearly "
+            "flag what is absent rather than filling gaps with inventions."
+        ),
+        llm=build_llm(),
+        verbose=True,
+        allow_delegation=False,
+        memory=False,
+    )

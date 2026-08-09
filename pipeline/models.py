@@ -76,3 +76,10 @@ class ATSReport(BaseModel):
     strengths: list[str] = Field(default_factory=list, title="What the resume does well")
     deductions: list[str] = Field(default_factory=list, title="What lost points and why")
     critical_missing: list[str] = Field(default_factory=list, title="Must-add checklist for the enhancer")
+
+class OptimizedResume(BaseModel):
+    """Repackaged resume (no invented facts) + report of what only the user can add."""
+
+    markdown: str = Field(title="Full optimized resume in Markdown, built only from existing ResumeProfile facts")
+    changes: list[str] = Field(default_factory=list, title="Safe restatements / alignments applied, for transparency")
+    missing_info_report: list[str] = Field(default_factory=list, title="Actionable checklist of what the user must add") 
