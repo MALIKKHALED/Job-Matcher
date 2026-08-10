@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Agentic Job Matcher</title>
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <header>
+    <h1>Agentic Job Matcher</h1>
+    <p class="tagline">Scrape &rarr; Extract &rarr; ATS &rarr; Enhance &rarr; Match &rarr; Cover</p>
+  </header>
+
+  <main>
+    <section id="form-section" class="card">
+      <label for="job_url">Job posting URL</label>
+      <input id="job_url" type="url" placeholder="https://www.linkedin.com/jobs/view/..." required />
+
+      <label for="resume_text">Resume text</label>
+      <textarea id="resume_text" rows="10" placeholder="Paste your resume here..."></textarea>
+
+      <label for="user_supplied_info">Extra info to add or fix (optional)</label>
+      <textarea id="user_supplied_info" rows="3" placeholder="e.g. Certifications, location, LinkedIn URL..."></textarea>
+
+      <button id="run-btn" type="button">Run Pipeline</button>
+      <div id="status" hidden></div>
+    </section>
+
+    <section id="results" hidden>
+      <div id="score-cards" class="cards"></div>
+      <div id="missing-check" class="card" hidden></div>
+      <div id="changes-card" class="card" hidden></div>
+      <div class="two-col">
+        <div id="resume-card" class="card" hidden></div>
+        <div id="cover-card" class="card" hidden></div>
+      </div>
+      <details id="job-card" class="card"><summary>Job details</summary></details>
+    </section>
+  </main>
+
+  <script src="/app.js"></script>
+</body>
+</html>

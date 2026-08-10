@@ -147,6 +147,9 @@ def match_eval_task(context: list | None = None) -> Task:
             "apply', based on match_percentage and gaps.\n\n"
             "Only use evidence from the resume. Never claim a skill is covered unless "
             "the resume demonstrates it."
+            "- Do NOT credit personality-trait requirements (e.g. detail-oriented, passionate),"
+            "self-driven, creative) unless explicitly stated in the resume; otherwise list"
+            "them in missing_skills and suggest them via the report."
         ),
         expected_output=(
             "A JSON object matching the MatchReport schema: match_percentage, "
@@ -177,6 +180,9 @@ def cover_letter_task(context: list | None = None) -> Task:
             "- Provide a subject line for an email application.\n"
             "- In 'notes', flag anything the candidate should verify or customize "
             "before sending (e.g. correct company name, add date)."
+            "- Do not attribute personality traits or soft skills (e.g. self-driven, passionate)"
+            "unless they appear in the resume; instead add a note in 'notes' suggesting the user"
+            "add them if true."
         ),
         expected_output=(
             "A JSON object matching the CoverLetter schema: subject, body (Markdown), "

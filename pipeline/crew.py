@@ -1,6 +1,7 @@
 """Assemble the full agentic pipeline crew."""
 
 from crewai import Crew, Process
+from crewai.task import Task
 
 from pipeline.agents import (
     ats_scorer_agent,
@@ -20,15 +21,19 @@ from pipeline.tasks import (
 )
 
 
-def build_crew() -> Crew:
+def build_tasks() -> list[Task]:
     scrape_task = scrape_job_task()
     resume_task = extract_resume_task()
     ats_task = ats_score_task(context=[resume_task])
     enhance_task = enhance_resume_task(context=[scrape_task, resume_task, ats_task])
     match_task = match_eval_task(context=[scrape_task, enhance_task])
     cover_task = cover_letter_task(context=[scrape_task, enhance_task, match_task])
+    return [scrape_task, resume_task, ats_task, enhance_task, match_task, cover_task]
 
-    return Crew(
+
+def build_pipeline() -> tuple[Crew, list[Task]]:
+    tasks = build_tasks()
+    crew = Crew(
         agents=[
             scraper_agent(),
             resume_extractor_agent(),
@@ -37,8 +42,13 @@ def build_crew() -> Crew:
             match_evaluator_agent(),
             cover_letter_writer_agent(),
         ],
-        tasks=[scrape_task, resume_task, ats_task, enhance_task, match_task, cover_task],
+        tasks=tasks,
         process=Process.sequential,
-        verbose=False,
+        verbose=True,
         memory=False,
     )
+    return crew, tasks
+
+
+def build_crew() -> Crew:
+    return build_pipeline()[0]
